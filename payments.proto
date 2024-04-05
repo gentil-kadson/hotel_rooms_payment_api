@@ -1,8 +1,13 @@
 syntax = "proto3";
 
 service PaymentService {
-    rpc GetAllPayments (Empty) returns (PaymentsList) {}
+    rpc List (Empty) returns (PaymentsList);
+    rpc Find (PaymentID) returns (Payment);
+    rpc Insert (Payment) returns (PaymentID);
+    rpc Update (PaymentID) returns (PaymentID);
 }
+
+message Empty {}
 
 message Payment {
     int32 paymentId = 1;
@@ -13,9 +18,11 @@ message Payment {
     string updatedAt = 6;
 }
 
-
-message Empty {}
+message PaymentID {
+    int32 paymentId = 1;
+}
 
 message PaymentsList {
     repeated Payments payments = 1;
 }
+
