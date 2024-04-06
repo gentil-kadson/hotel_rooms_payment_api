@@ -63,11 +63,37 @@ async function main() {
     }
   }
 
+  async function update(call, callback) {
+    const params = ({ paymentId, bookingId, creditCardId, paymentStatus } =
+      call.request);
+    let updatedObj = {};
+    for (let param in params) {
+      if (params[param]) {
+        updatedObj[param] = params[param];
+      }
+    }
+    const updatedPayment = await prisma.payment.update({
+      data: updatedObj,
+      where: {
+        paymentId: paymentId,
+      },
+    });
+    if (updatedPayment) {
+      callback(null, { payment: updatedPayment });
+    } else {
+      callback({
+        message: "Payment not found",
+        code: grpc.status.NOT_FOUND,
+      });
+    }
+  }
+
   const server = new grpc.Server();
   server.addService(paymentProto.PaymentService.service, {
     insert: insert,
     find: find,
     list: list,
+    update: update,
   });
   server.bindAsync(
     "localhost:50051",
