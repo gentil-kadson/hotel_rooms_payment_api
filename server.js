@@ -51,10 +51,23 @@ async function main() {
     }
   }
 
+  async function list(call, callback) {
+    const payments = await prisma.payment.findMany();
+    if (payments) {
+      callback(null, { payments: payments });
+    } else {
+      callback({
+        message: "There are no payments in the database",
+        code: grpc.status.NOT_FOUND,
+      });
+    }
+  }
+
   const server = new grpc.Server();
   server.addService(paymentProto.PaymentService.service, {
     insert: insert,
     find: find,
+    list: list,
   });
   server.bindAsync(
     "localhost:50051",
