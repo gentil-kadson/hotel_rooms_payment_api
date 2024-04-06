@@ -7,6 +7,7 @@ service PaymentService {
     rpc Find (PaymentId) returns (FoundPayment) {}
     rpc Insert (NewPayment) returns (PaymentId) {}
     rpc Update (CompletePayment) returns (FoundPayment) {}
+    rpc Remove (PaymentId) returns (Empty) {}
 }
 
 message Empty {}

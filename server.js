@@ -88,12 +88,33 @@ async function main() {
     }
   }
 
+  async function remove(call, callback) {
+    const id = call.request.paymentId;
+    const deletedPayment = await prisma.payment.delete({
+      where: {
+        paymentId: id,
+      },
+    });
+    if (deletedPayment) {
+      callback({
+        message: "Payment deleted successfully",
+        code: grpc.status.OK,
+      });
+    } else {
+      callback({
+        message: "Payment not found",
+        code: grpc.status.NOT_FOUND,
+      });
+    }
+  }
+
   const server = new grpc.Server();
   server.addService(paymentProto.PaymentService.service, {
     insert: insert,
     find: find,
     list: list,
     update: update,
+    remove: remove,
   });
   server.bindAsync(
     "localhost:50051",
