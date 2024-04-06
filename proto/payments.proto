@@ -4,7 +4,7 @@ package payment;
 
 service PaymentService {
     rpc List (Empty) returns (PaymentsList) {}
-    rpc Find (PaymentId) returns (Payment) {}
+    rpc Find (PaymentId) returns (FoundPayment) {}
     rpc Insert (NewPayment) returns (PaymentId) {}
     rpc Update (PaymentId) returns (PaymentId) {}
 }
@@ -14,6 +14,10 @@ message Empty {}
 message NewPayment {
     int32 bookingId = 2;
     int32 creditCardId = 3;
+}
+
+message FoundPayment {
+    Payment payment = 1;
 }
 
 message Payment {

@@ -34,9 +34,27 @@ async function main() {
     }
   }
 
+  async function find(call, callback) {
+    const id = call.request.paymentId;
+    const payment = await prisma.payment.findUnique({
+      where: {
+        paymentId: id,
+      },
+    });
+    if (payment) {
+      callback(null, { payment: payment });
+    } else {
+      callback({
+        message: "Payment not found",
+        code: grpc.status.NOT_FOUND,
+      });
+    }
+  }
+
   const server = new grpc.Server();
   server.addService(paymentProto.PaymentService.service, {
     insert: insert,
+    find: find,
   });
   server.bindAsync(
     "localhost:50051",
