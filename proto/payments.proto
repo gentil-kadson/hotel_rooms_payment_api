@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package payment;
+
+service PaymentService {
+    rpc List (Empty) returns (PaymentsList) {}
+    rpc Find (PaymentId) returns (FoundPayment) {}
+    rpc Insert (NewPayment) returns (PaymentId) {}
+    rpc Update (CompletePayment) returns (FoundPayment) {}
+    rpc Remove (PaymentId) returns (Empty) {}
+}
+
+message Empty {}
+
+message NewPayment {
+    int32 bookingId = 2;
+    int32 creditCardId = 3;
+}
+
+message CompletePayment {
+    int32 paymentId = 1;
+    int32 bookingId = 2;
+    int32 creditCardId = 3;
+    string paymentStatus = 4;
+    string createdAt = 5;
+    string updatedAt = 6;
+}
+
+message FoundPayment {
+    Payment payment = 1;
+}
+
+message Payment {
+    int32 bookingId = 1;
+    int32 creditCardId = 2;
+    string paymentStatus = 3;
+    string createdAt = 4;
+    string updatedAt = 5;
+}
+
+message PaymentId {
+    int32 paymentId = 1;
+}
+
+message PaymentsList {
+    repeated CompletePayment payments = 1;
+}
+
