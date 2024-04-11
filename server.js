@@ -28,7 +28,7 @@ async function main() {
       callback(null, { paymentId: payment.paymentId });
     } else {
       callback({
-        message: "Payment not found",
+        message: JSON.stringify("Couldn't create payment"),
         code: grpc.status.INVALID_ARGUMENT,
       });
     }
@@ -45,7 +45,7 @@ async function main() {
       callback(null, { payment: payment });
     } else {
       callback({
-        message: "Payment not found",
+        message: JSON.stringify("Payment not found"),
         code: grpc.status.NOT_FOUND,
       });
     }
@@ -57,7 +57,7 @@ async function main() {
       callback(null, { payments: payments });
     } else {
       callback({
-        message: "There are no payments in the database",
+        message: JSON.stringify("There are no payments in the database"),
         code: grpc.status.NOT_FOUND,
       });
     }
@@ -82,7 +82,7 @@ async function main() {
       callback(null, { payment: updatedPayment });
     } else {
       callback({
-        message: "Payment not found",
+        message: JSON.stringify("Payment not found"),
         code: grpc.status.NOT_FOUND,
       });
     }
@@ -90,19 +90,26 @@ async function main() {
 
   async function remove(call, callback) {
     const id = call.request.paymentId;
-    const deletedPayment = await prisma.payment.delete({
+    const paymentExists = await prisma.payment.findUnique({
       where: {
         paymentId: id,
       },
     });
-    if (deletedPayment) {
-      callback({
-        message: "Payment deleted successfully",
-        code: grpc.status.OK,
+    if (paymentExists) {
+      const deletedPayment = await prisma.payment.delete({
+        where: {
+          paymentId: id,
+        },
       });
+      if (deletedPayment) {
+        callback(null, {
+          message: JSON.stringify("Payment deleted successfully"),
+          code: grpc.status.OK,
+        });
+      }
     } else {
       callback({
-        message: "Payment not found",
+        message: JSON.stringify("Payment not found"),
         code: grpc.status.NOT_FOUND,
       });
     }

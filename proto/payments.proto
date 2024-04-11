@@ -2,12 +2,14 @@ syntax = "proto3";
 
 package payment;
 
+import "google/protobuf/empty.proto";
+
 service PaymentService {
     rpc List (Empty) returns (PaymentsList) {}
     rpc Find (PaymentId) returns (FoundPayment) {}
     rpc Insert (NewPayment) returns (PaymentId) {}
     rpc Update (CompletePayment) returns (FoundPayment) {}
-    rpc Remove (PaymentId) returns (Empty) {}
+    rpc Remove (PaymentId) returns (google.protobuf.Empty) {}
 }
 
 message Empty {}
@@ -22,8 +24,6 @@ message CompletePayment {
     int32 bookingId = 2;
     int32 creditCardId = 3;
     string paymentStatus = 4;
-    string createdAt = 5;
-    string updatedAt = 6;
 }
 
 message FoundPayment {
