@@ -19,7 +19,6 @@ async function main() {
     const paymentItem = {
       bookingId: call.request.bookingId,
       creditCardId: call.request.creditCardId,
-      paymentStatus: "AGUARDO",
     };
     const payment = await prisma.payment.create({
       data: paymentItem,

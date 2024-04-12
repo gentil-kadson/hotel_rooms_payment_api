@@ -17,7 +17,7 @@ model Payment {
   paymentId Int @id @default(autoincrement())
   bookingId Int
   creditCardId Int
-  paymentStatus String @db.VarChar(10)
+  isPaymentSuccessful Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
